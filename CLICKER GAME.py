@@ -5,14 +5,15 @@ stats = {
     "pow":1,
 }
 price = {
-"pow":100
+    "pow":50
 }
 opened ={
     "shop" : False
 }
 buttons={
     "counter":lambda:"Clicks: "+str(stats["clicks"]),
-    "button_p":lambda:"Buy "+str(price["pow"])
+    "button_p":lambda:"Buy "+str(price["pow"]),
+    "label_p":lambda:"Buy click power! ({0})".format(str(stats["pow"]))
 }
 
 #main window
@@ -26,31 +27,32 @@ root.attributes('-fullscreen', False)
 
 def buy(stat_key):
     stats[stat_key]+=1
-    price[stat_key]+=50
+    price[stat_key] += price[stat_key]//5
 def update_b(key, key_str):
     key.config(text=buttons[key_str]())
 def update_clicks():
     stats["clicks"] += stats["pow"]
 def new_window(name):
     #shop window
-    def close_shop():
-        opened["shop"] = False
-        shop.destroy()
+    def close_window(name):
+        opened[name] = False
+        name.destroy()
     if name=="shop" and opened["shop"]==False:
-        opened["shop"]=True
+        opened[name] = True
         shop = tk.Toplevel()
         shop.title("SHOP")
         shop.geometry("200x300")
         shop.iconbitmap("data/icon.ico")
         shop.resizable(width=False, height=False)
 
-        label_p = tk.Label(shop, text="Buy click power!")
+        label_p = tk.Label(shop, text="Buy click power! ({0})".format(str(stats["pow"])))
         label_p.pack()
-        button_p = tk.Button(shop, text="Buy "+str(price["pow"]), command=lambda:(buy("pow"),update_b(button_p,"button_p")))
+        button_p = tk.Button(shop, text="Buy "+str(price["pow"]),
+                             command=lambda:(buy("pow"),update_b(button_p,"button_p"),update_b(label_p, "label_p")))
         button_p.pack()
 
         rgb(15,15,0,0,0,0,1, 0, shop)
-        shop.protocol("WM_DELETE_WINDOW", close_shop)
+        shop.protocol("WM_DELETE_WINDOW",lambda: close_window(shop))
 def close_app():
     print("See you next time!")
     root.destroy()
@@ -82,7 +84,8 @@ header.pack()
 counter = tk.Label(root, text="Clicks: "+str(stats["clicks"]), bg="white")
 counter.pack()
 
-button_main = tk.Button(root, text="Buton", command=lambda:(update_clicks(), update_b(counter,"counter")), bg="#99f2f9")
+button_main = tk.Button(root, text="Buton",
+                        command=lambda:(update_clicks(), update_b(counter,"counter")), bg="#99f2f9")
 button_main.pack()
 
 shop_b = tk.Button(root, text="Shop", bg="#99f2f9", command=lambda:new_window("shop"))
