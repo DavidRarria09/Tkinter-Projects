@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox as mb
 
 stats = {
     "clicks":0,
@@ -25,9 +26,15 @@ root.resizable(width=False, height=False)
 root.iconbitmap('data/icon.ico')
 root.attributes('-fullscreen', False)
 
+def error():
+    mb.showerror("Broke boi", "Insufficient funds!")
 def buy(stat_key):
-    stats[stat_key]+=1
-    price[stat_key] += price[stat_key]//5
+    if stats["clicks"] >= price[stat_key]:
+        stats["clicks"]-=price[stat_key]
+        update_b(counter, "counter")
+        stats[stat_key]+=1
+        price[stat_key] += price[stat_key]//5
+    else: error()
 def update_b(key, key_str):
     key.config(text=buttons[key_str]())
 def update_clicks():
@@ -54,8 +61,10 @@ def new_window(name):
         rgb(15,15,0,0,0,0,1, 0, shop)
         shop.protocol("WM_DELETE_WINDOW",lambda: close_window(shop))
 def close_app():
-    print("See you next time!")
-    root.destroy()
+    answer = mb.askyesno("Exit", "Are you sure you want to exit?")
+    if answer:
+        print("See you next time!")
+        root.destroy()
 def rgb(r1, r2, g1, g2, b1, b2, c, pos, ob):
     color = ["0","1","2","3","4","5","6","7","8","9","a", "b", "c", "d", "e", "f"]
     sol = [r1,r2,g1,g2,b1,b2]
