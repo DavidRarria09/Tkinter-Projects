@@ -1,27 +1,26 @@
 import tkinter as tk
 from tkinter import messagebox as mb
+from tkinter import simpledialog as ask
+import random
 
-def info():
-    mb.showinfo("Info", "Text informativ")
-def avertisment():
-    mb.showwarning("Avertisment", "Text informativ")
-def eroare():
-    mb.showerror("Eroare", "Text informativ")
-def yn():
-    raspuns=mb.askyesno("Alegere", "Vrei?")
-    if raspuns:
-        print("Yay!")
-    else:
-        print("Bruh")
+def inchidere():
+    print("Sigma")
+    root.destroy()
+
+def citire_num():
+    rezultat = ask.askinteger("Citire date", "Citeste un nr: ")
+    mb.showinfo("Info","Numarul citit a fost: {0}".format(rezultat))
+
 root = tk.Tk()
-root.title("Test app")
-root. geometry("250x250")
-b1 = tk.Button(text="Info", command=info)
-b1.pack()
-b2=tk.Button(text="Avertisment", command=avertisment)
-b2.pack()
-b3=tk.Button(text="Eroare", command=eroare)
-b3.pack()
-b4=tk.Button(text="Yes or No", command=yn)
-b4.pack()
+root.title("Practice")
+root.geometry("200x200")
+root.resizable(width=False, height=False)
+root.protocol("WM_DELETE_WINDOW", lambda:inchidere())
+
+button = tk.Button(root, text="info", command=lambda:mb.showinfo("Title", "Esti sigma"))
+button.pack()
+
+button_i = tk.Button(root, text="citeste un nr", command=lambda:citire_num())
+button_i.pack()
+
 root.mainloop()
