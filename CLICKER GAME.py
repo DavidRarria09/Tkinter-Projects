@@ -16,7 +16,7 @@ price = {
 }
 base_price={
     "pow": 50,
-    "auto_clickers": 100
+    "auto_clickers": 200
 }
 opened ={
     "shop" : False
@@ -59,11 +59,9 @@ def new_window(name):
     #shop window
     def close_window(win):
         opened[name] = False
-        print(opened[name])
         win.destroy()
     if name=="shop" and opened[name]==False:
         opened[name] = True
-        print(opened[name])
         shop = tk.Toplevel()
         shop.title("SHOP")
         shop.geometry("200x300")
