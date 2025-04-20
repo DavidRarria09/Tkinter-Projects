@@ -1,21 +1,34 @@
+import os
 import random
 import math
 import tkinter as tk
 from tkinter import messagebox as mb
 from tkinter import simpledialog as ask
 
-Light=False
+if not os.path.exists("data/stats.txt"):
+    g = open("data/stats.txt", 'w')
+    g.write("0\n0\nFalse")
+    g.close()
+
+f = open("data/stats.txt", 'r')
+
+games_played = int(f.readline())
+average_guesses=int(f.readline())
+Light=f.readline().strip()=="True"
+f.close()
+
 is_playing = False
 opened_w = False
+
 stats = {
-    "games_played":0,
-    "average_guesses":0
+    "games_played":games_played,
+    "average_guesses":average_guesses
 }
 
 def change_style():
     global Light
+    Light = not Light
     if Light:
-        Light=False
         root.config(bg="#1a1a1a")
         header.config(bg="#15557f")
         dark_mode.config(bg="#0c2a46",text="Light Mode")
@@ -24,7 +37,6 @@ def change_style():
         stat.config(bg="#0c2a46")
         exit.config(bg="#0c2a46")
     else:
-        Light = True
         root.config(bg="#ffffff")
         header.config(bg="#7cfffd")
         dark_mode.config(bg="#ffa200",text="Dark Mode")
@@ -96,24 +108,35 @@ root.iconbitmap("data/icon.ico")
 root.title("GUESS THE NUMBER")
 root.geometry("200x150")
 root.resizable(width=False, height=False)
+root.config(bg="#ffffff")
 
-header=tk.Label(root, text="GUESS THE NUMBER")
+header=tk.Label(root, text="GUESS THE NUMBER", bg="#7cfffd")
 header.pack()
 
-dark_mode=tk.Button(root, text="Dark Mode", command=lambda:change_style())
+dark_mode=tk.Button(root, text="Dark Mode", command=lambda:change_style(), bg="#ffa200")
 dark_mode.pack()
 
 label_space =  tk.Label(bg="#ffffff")
 label_space.pack()
 
-play=tk.Button(root, text="PLAY", command=lambda:gameplay())
+play=tk.Button(root, text="PLAY", command=lambda:gameplay(), bg="#ffa200")
 play.pack()
 
-stat = tk.Button(root, text="STATS", command=lambda:stat_win())
+stat = tk.Button(root, text="STATS", command=lambda:stat_win(), bg="#ffa200")
 stat.pack()
 
-exit=tk.Button(root, text="EXIT", command=lambda:root.destroy())
+def save_and_exit():
+    g = open("data/stats.txt", 'w')
+    g.writelines(str(stats["games_played"])+"\n")
+    g.writelines(str(stats["average_guesses"])+"\n")
+    g.writelines(str(Light)+"\n")
+    g.close()
+    root.destroy()
+
+exit=tk.Button(root, text="EXIT", command=lambda:save_and_exit(), bg="#ffa200")
 exit.pack()
 
-change_style()
+if Light:
+    Light = not Light
+    change_style()
 root.mainloop()
